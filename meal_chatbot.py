@@ -1,22 +1,42 @@
-# meal_chatbot.py
+# mealmate.py
 
 import random
 
-# Sample meals by category
+
 meal_suggestions = {
-    "breakfast": ["Oatmeal with fruit", "Egg sandwich", "Smoothie bowl", "Pancakes", "Greek yogurt with granola"],
-    "lunch": ["Chicken salad", "Rice and beans", "Tuna wrap", "Veggie stir-fry", "Pasta with tomato sauce"],
-    "dinner": ["Grilled chicken and veggies", "Ramen with egg", "Fried rice", "Tacos", "Lentil soup"]
+    "breakfast": [
+        "Chai and mandazi",
+        "Uji (millet porridge)",
+        "Bread and eggs",
+        "Sweet potatoes and tea",
+        "Chapati and beans"
+        'indomie'
+    ],
+    "lunch": [
+        "Ugali and sukuma wiki",
+        "Rice and beans",
+        "Githeri",
+        "Pilau and kachumbari",
+        "Chapati and ndengu"
+        'smocha '
+        'samosa'
+    ],
+    "dinner": [
+        "Ugali and eggs",
+        "Mukimo and beef stew",
+        "Matoke with vegetables",
+        "Rice and lentils",
+        "Ndengu stew with chapati"
+    ]
 }
 
 def suggest_meal(available_items):
-    # Match user ingredients to meal suggestions
     matches = []
     for meal_list in meal_suggestions.values():
         for meal in meal_list:
             if any(item.lower() in meal.lower() for item in available_items):
                 matches.append(meal)
-    return matches if matches else ["Hmmm... maybe go with instant noodles? 🍜"]
+    return matches if matches else ["Maybe grab some chips and soda? 🍟🥤"]
 
 def create_meal_plan(days=3):
     plan = {}
@@ -29,12 +49,12 @@ def create_meal_plan(days=3):
     return plan
 
 def main():
-    print("👩‍🍳 MealBot: Hey there, hungry student! Let’s figure out what you can eat.")
+    print("🍴 MealMate:Mambo Comrade ")
     while True:
         user_input = input("\nYou: ").strip().lower()
 
         if "bye" in user_input:
-            print("👩‍🍳 MealBot: Take care! Eat something good! 🥗")
+            print("🍴 MealMate: Kwaheri! Stay full and healthy! 😊")
             break
 
         elif "plan" in user_input:
@@ -47,17 +67,17 @@ def main():
                     for meal_time, meal in meals.items():
                         print(f"  {meal_time}: {meal}")
             except ValueError:
-                print("👩‍🍳 MealBot: Please enter a number of days!")
+                print("🍴 MealMate: Tafadhali, enter a number!")
 
         elif "option" in user_input or "ingredient" in user_input:
             items = input("List what you have (comma-separated): ").split(",")
             suggestions = suggest_meal([i.strip() for i in items])
-            print("\n👩‍🍳 MealBot: Based on that, you could try:")
+            print("\n🍴 MealMate: Based on that, you could try:")
             for meal in suggestions:
                 print(f" - {meal}")
 
         else:
-            print("👩‍🍳 MealBot: You can ask for 'meal plan', or tell me your 'ingredients/options'!")
+            print("🍴 MealMate: You can ask for a 'meal plan', or tell me your 'ingredients/options'!")
 
 if __name__ == "__main__":
     main()
