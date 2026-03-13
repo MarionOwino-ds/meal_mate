@@ -1,7 +1,7 @@
 import streamlit as st
 from chatbot import *
 
-st.title("🍴 MealMate AI")
+st.title("🍴 MealMate ")
 
 
 if "messages" not in st.session_state:

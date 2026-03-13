@@ -2,7 +2,7 @@ import sqlite3
 import os
 import random
 
-# Ensure Python always finds the database
+
 DB_PATH = os.path.join(os.path.dirname(__file__), "meals.db")
 
 def get_meals_by_ingredient(ingredient):
