@@ -72,7 +72,7 @@ with st.sidebar:
 
     st.markdown("### 🎯 What I Can Help With:")
     st.markdown("• **Dietary Goals:** Weight loss/gain")
-    st.markdown("• **Budget Meals:** Under $80")
+    st.markdown("• **Budget Meals:** Under KES 500")
     st.markdown("• **Ingredients:** What you have")
     st.markdown("• **Restrictions:** Vegetarian, vegan, etc.")
     st.markdown("• **Meal Types:** Breakfast, lunch, dinner")
@@ -111,7 +111,7 @@ if not st.session_state.messages:
 
 I'm here to help you discover delicious Kenyan meals based on:
 • Your dietary goals (weight loss/gain)
-• Budget constraints
+• Budget constraints (under KES 500)
 • Available ingredients
 • Dietary restrictions
 

@@ -8,7 +8,7 @@ It focuses on affordable and common **Kenyan dishes** that students love!
 ## ✨ Features
 - 🤖 AI-powered chat interface with Streamlit
 - 🥘 Intelligent meal suggestions based on ingredients, goals, and preferences
-- 💰 Budget-friendly meal recommendations
+- 💰 Budget-friendly meal recommendations (under KES 500)
 - ⚖️ Weight loss/gain meal planning
 - 🥗 Dietary restriction support (vegetarian, vegan, gluten-free, low-carb)
 - 🧠 Smart intent parsing and meal database
@@ -92,33 +92,33 @@ It focuses on affordable and common **Kenyan dishes** that students love!
 
 ```
 You: I want to lose weight
-DormChef: Great choice for staying healthy! Here are some lighter meal options:
+DormChef: 💪 **Great choice for staying healthy!** Here are some lighter meal options that will keep you energized:
 
-1. **Vegetable Soup** (lunch)
-   • Calories: 250 | Price: $60
+1. 🍽️ Vegetable Soup *(Lunch)*
+   • Calories: 250 | Price: KES 250
    • Ingredients: carrots, spinach, tomatoes, onions
-   • Quick tip: Ready in 20 minutes!
+   • 💡 Tip: Ready in 20 minutes!
 
-2. **Tea and Bread** (breakfast)
-   • Calories: 250 | Price: $35
+2. 🍽️ Tea and Bread *(Breakfast)*
+   • Calories: 250 | Price: KES 140
    • Ingredients: bread, tea, margarine
-   • Health note: Low in calories, high in fiber
+   • 🌟 Health: Low in calories, high in fiber
 
 You: Cheap meals with chicken
-DormChef: Smart thinking! Here are some wallet-friendly meal ideas:
+DormChef: 🤑 **Budget-friendly and delicious!** Check out these affordable options:
 
-1. **Chicken Stir Fry** (dinner)
-   • Calories: 550 | Price: $150
+1. 🍽️ Chicken Stir Fry *(Dinner)*
+   • Calories: 550 | Price: KES 600
    • Ingredients: chicken, rice, vegetables, soy sauce
-   • Budget tip: Use seasonal vegetables to save more!
+   • 💡 Tip: Hearty and satisfying for evening meals!
 
 You: Vegetarian dinner ideas
-DormChef: Perfect! Here are some delicious plant-based dinner options:
+DormChef: 🤤 **I've got some great options for you** that I think you'll love:
 
-1. **Vegetable Stew** (dinner)
-   • Calories: 300 | Price: $55
+1. 🍽️ Vegetable Stew *(Dinner)*
+   • Calories: 300 | Price: KES 220
    • Ingredients: potatoes, carrots, cabbage
-   • Nutrition: High in vitamins A and C!
+   • 🌟 Health: High in vitamins A and C!
 ```
 
 ### **Understanding the Responses**

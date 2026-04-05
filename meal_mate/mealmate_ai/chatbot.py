@@ -230,7 +230,7 @@ def format_meal_response(meals: List[Dict], intent: Dict) -> str:
         health_tip = random.choice(health_tips.get(goal, ['Balanced and healthy!']))
 
         meal_lines.append(f"**{i}. 🍽️ {meal['name']}** *({meal['category'].title()})*")
-        meal_lines.append(f"   • **Calories:** {meal['calories']} kcal | **Price:** ${meal['price']}")
+        meal_lines.append(f"   • **Calories:** {meal['calories']} kcal | **Price:** KES {meal['price']}")
         meal_lines.append(f"   • **Ingredients:** {ingredients_list}")
         meal_lines.append(f"   • **💡 Tip:** {category_tip}")
         meal_lines.append(f"   • **🌟 Health:** {health_tip}")
@@ -269,7 +269,7 @@ def get_no_results_response(intent: Dict) -> str:
         responses = [
             "💰 Let me find some more affordable options for you! Here are our cheapest meals that still provide great nutrition and flavor:",
             "🤑 Budget-friendly meals coming right up! Here are our most affordable options that won't break the bank:",
-            "💸 I can show you meals under $80 that are both delicious and nutritious. Perfect for student budgets!"
+            "💸 I can show you meals under KES 500 that are both delicious and nutritious. Perfect for student budgets!"
         ]
     else:
         responses = [
@@ -283,7 +283,7 @@ def get_no_results_response(intent: Dict) -> str:
     try:
         # Get fallback meals based on intent
         if intent['goal'] == 'budget':
-            fallback_meals = get_meals_by_criteria(max_price=80, limit=3)
+            fallback_meals = get_meals_by_criteria(max_price=500, limit=3)
         elif intent['goal'] == 'lose_weight':
             fallback_meals = get_meals_by_criteria(max_calories=500, limit=3)
         elif intent['goal'] == 'gain_weight':
@@ -294,7 +294,7 @@ def get_no_results_response(intent: Dict) -> str:
         if fallback_meals:
             response += "\n\n🍽️ **Here are some great alternatives:**\n"
             for i, meal in enumerate(fallback_meals, 1):
-                response += f"• **{meal['name']}** - ${meal['price']}, {meal['calories']} cal\n"
+                response += f"• **{meal['name']}** - KES {meal['price']}, {meal['calories']} cal\n"
     except Exception:
         pass
 
@@ -326,7 +326,7 @@ def get_chatbot_response(user_input: str) -> str:
 
 **I can help you with:**
 • **Dietary goals:** Weight loss/gain, healthy eating
-• **Budget meals:** Affordable options under $80
+• **Budget meals:** Affordable options under KES 500
 • **Ingredients:** Recipes using what you have
 • **Restrictions:** Vegetarian, vegan, gluten-free
 • **Meal types:** Breakfast, lunch, dinner ideas
@@ -350,7 +350,7 @@ What would you like to explore today? 🍽️"""
         elif intent['goal'] == 'gain_weight':
             query_params['min_calories'] = 600
         elif intent['goal'] == 'budget':
-            query_params['max_price'] = 80
+            query_params['max_price'] = 500
 
         if intent['category']:
             query_params['category'] = intent['category']
