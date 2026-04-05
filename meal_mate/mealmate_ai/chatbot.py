@@ -176,84 +176,125 @@ def format_meal_response(meals: List[Dict], intent: Dict) -> str:
     if not meals:
         return get_no_results_response(intent)
 
+    # Enhanced intro messages with emojis and personality
     if intent['goal'] == 'lose_weight':
         intro_templates = [
-            "Great choice for staying healthy! Here are some lighter meal options:",
-            "Perfect for your weight loss goals! These meals are lower in calories:",
-            "I love helping with healthy eating! Check out these nutritious, lower-calorie options:"
+            "💪 **Great choice for staying healthy!** Here are some lighter meal options that will keep you energized:",
+            "🎯 **Perfect for your weight loss goals!** These meals are lower in calories but high in nutrition:",
+            "🌱 **I love helping with healthy eating!** Check out these nutritious, lower-calorie options:"
         ]
     elif intent['goal'] == 'gain_weight':
         intro_templates = [
-            "Awesome! Let's fuel up with some hearty meals:",
-            "Perfect for building strength! Here are some calorie-dense options:",
-            "Great choice for gaining! These meals will help you pack on the calories:"
+            "💪 **Awesome! Let's fuel up with some hearty meals** to help you build strength:",
+            "🏋️ **Perfect for building muscle!** Here are some calorie-dense options packed with nutrients:",
+            "⚡ **Great choice for gaining!** These meals will help you pack on the calories you need:"
         ]
     elif intent['goal'] == 'budget':
         intro_templates = [
-            "Smart thinking! Here are some wallet-friendly meal ideas:",
-            "Budget-friendly and delicious! Check these out:",
-            "Perfect for saving money without sacrificing taste:"
+            "💰 **Smart thinking!** Here are some wallet-friendly meal ideas that won't break the bank:",
+            "🤑 **Budget-friendly and delicious!** Check out these affordable options:",
+            "💸 **Perfect for saving money** without sacrificing taste or nutrition:"
         ]
     else:
         intro_templates = [
-            "Sounds delicious! Here are some meal suggestions:",
-            "I've got some great options for you:",
-            "You might enjoy these meals:"
+            "🍽️ **Sounds delicious!** Here are some amazing meal suggestions just for you:",
+            "🤤 **I've got some great options for you** that I think you'll love:",
+            "✨ **You might enjoy these meals** - they're popular choices among students:"
         ]
 
     intro = random.choice(intro_templates)
 
+    # Enhanced meal formatting with tips and nutritional info
     meal_lines = []
-    for i, meal in enumerate(meals[:5], 1):
+    cooking_tips = {
+        'breakfast': ['Quick to prepare - perfect for busy mornings!', 'High in protein to start your day right!', 'Great source of sustained energy!'],
+        'lunch': ['Balanced nutrition for your midday meal!', 'Keeps you full until dinner!', 'Rich in vitamins and minerals!'],
+        'dinner': ['Hearty and satisfying for evening meals!', 'Helps you recover and rest well!', 'Nutrient-dense for overnight recovery!']
+    }
+
+    health_tips = {
+        'lose_weight': ['Low in calories, high in fiber!', 'Helps maintain healthy weight!', 'Nutrient-dense for fewer calories!'],
+        'gain_weight': ['Calorie-dense for muscle building!', 'High in healthy fats and proteins!', 'Perfect for active lifestyles!'],
+        'budget': ['Affordable without compromising nutrition!', 'Uses common, inexpensive ingredients!', 'Great value for money!']
+    }
+
+    for i, meal in enumerate(meals[:4], 1):  # Show top 4 meals
         ingredients_list = meal['ingredients'].replace(',', ', ')
-        meal_lines.append(f"{i}. **{meal['name']}** ({meal['category']})")
-        meal_lines.append(f"   • Calories: {meal['calories']} | Price: ${meal['price']}")
-        meal_lines.append(f"   • Ingredients: {ingredients_list}")
+
+        # Determine meal category for tips
+        category = meal['category']
+        goal = intent.get('goal', 'general')
+
+        # Get contextual tips
+        category_tip = random.choice(cooking_tips.get(category, ['Delicious and nutritious!']))
+        health_tip = random.choice(health_tips.get(goal, ['Balanced and healthy!']))
+
+        meal_lines.append(f"**{i}. 🍽️ {meal['name']}** *({meal['category'].title()})*")
+        meal_lines.append(f"   • **Calories:** {meal['calories']} kcal | **Price:** ${meal['price']}")
+        meal_lines.append(f"   • **Ingredients:** {ingredients_list}")
+        meal_lines.append(f"   • **💡 Tip:** {category_tip}")
+        meal_lines.append(f"   • **🌟 Health:** {health_tip}")
+        meal_lines.append("")  # Empty line for spacing
 
     response = intro + "\n\n" + "\n".join(meal_lines)
 
-    if len(meals) > 5:
-        response += f"\n\n...and {len(meals) - 5} more options available!"
+    if len(meals) > 4:
+        response += f"\n*...and {len(meals) - 4} more delicious options available! Ask me to show more!*"
+
+    # Add encouragement based on goal
+    if intent['goal'] == 'lose_weight':
+        response += "\n\n💪 **Remember:** Consistency is key! Combine these meals with regular exercise for best results."
+    elif intent['goal'] == 'gain_weight':
+        response += "\n\n🏋️ **Pro tip:** Pair these meals with strength training for optimal muscle growth!"
+    elif intent['goal'] == 'budget':
+        response += "\n\n🤑 **Money-saving hack:** Buy ingredients in bulk and cook in batches for even more savings!"
 
     return response
 
 def get_no_results_response(intent: Dict) -> str:
+    # More helpful and engaging no-results responses
     if intent['goal'] == 'lose_weight':
         responses = [
-            "Hmm, I don't have many low-calorie options right now. How about trying some of our lighter meals under 500 calories?",
-            "Let me check our lighter options... Actually, try being less specific about ingredients and I'll show you some healthy choices!",
-            "No exact matches, but I can suggest some naturally lower-calorie meals. Would you like to see options under 500 calories?"
+            "🤔 Hmm, I don't have many low-calorie options matching your criteria. How about trying some of our lighter meals under 500 calories? They're nutritious and satisfying!",
+            "💭 Let me check our lighter options... Actually, try being less specific about ingredients and I'll show you some healthy, low-calorie choices that are perfect for weight loss!",
+            "🎯 No exact matches, but I can suggest some naturally lower-calorie meals. Would you like to see options under 500 calories? They're great for maintaining a healthy weight!"
         ]
     elif intent['goal'] == 'gain_weight':
         responses = [
-            "Looking for more calorie-dense options? Let me show you our heartier meals!",
-            "I might not have exactly what you're looking for, but check out these higher-calorie options:",
-            "Let's focus on some more substantial meals. Here are our calorie-rich options:"
+            "💪 Looking for more calorie-dense options? Let me show you our heartier meals that are perfect for building strength and gaining healthy weight!",
+            "🏋️ I might not have exactly what you're looking for, but check out these higher-calorie options packed with nutrients for muscle building:",
+            "⚡ Let's focus on some more substantial meals. Here are our calorie-rich options that will help you fuel up and gain weight effectively!"
         ]
     elif intent['goal'] == 'budget':
         responses = [
-            "Let me find some more affordable options for you:",
-            "Budget-friendly meals coming right up! Here are our cheapest options:",
-            "I can show you meals under $80. How does that sound?"
+            "💰 Let me find some more affordable options for you! Here are our cheapest meals that still provide great nutrition and flavor:",
+            "🤑 Budget-friendly meals coming right up! Here are our most affordable options that won't break the bank:",
+            "💸 I can show you meals under $80 that are both delicious and nutritious. Perfect for student budgets!"
         ]
     else:
         responses = [
-            "I couldn't find exact matches for those ingredients. Try different words or be less specific!",
-            "Hmm, let me think of something else. How about trying some popular meals?",
-            "No direct matches, but I can suggest some delicious alternatives!"
+            "🔍 I couldn't find exact matches for those ingredients, but don't worry! Try different words or be less specific, and I'll find some delicious alternatives!",
+            "🤔 Hmm, let me think of something else. How about trying some of our most popular meals? They're loved by students everywhere!",
+            "✨ No direct matches, but I can suggest some delicious alternatives that use similar ingredients. Would you like to see them?"
         ]
 
     response = random.choice(responses)
 
     try:
+        # Get fallback meals based on intent
         if intent['goal'] == 'budget':
             fallback_meals = get_meals_by_criteria(max_price=80, limit=3)
+        elif intent['goal'] == 'lose_weight':
+            fallback_meals = get_meals_by_criteria(max_calories=500, limit=3)
+        elif intent['goal'] == 'gain_weight':
+            fallback_meals = get_meals_by_criteria(min_calories=600, limit=3)
         else:
             fallback_meals = get_meals_by_criteria(limit=3)
+
         if fallback_meals:
-            response += "\n\nHere are some popular options instead:\n"
-            for meal in fallback_meals:
-                response += f"• {meal['name']} (${meal['price']}, {meal['calories']} cal)\n"
+            response += "\n\n🍽️ **Here are some great alternatives:**\n"
+            for i, meal in enumerate(fallback_meals, 1):
+                response += f"• **{meal['name']}** - ${meal['price']}, {meal['calories']} cal\n"
     except Exception:
         pass
 
@@ -261,7 +302,43 @@ def get_no_results_response(intent: Dict) -> str:
 
 def get_chatbot_response(user_input: str) -> str:
     if not user_input or not user_input.strip():
-        return "Hey there! What kind of meal are you in the mood for? Tell me about your preferences!"
+        return "👋 Hey there! What kind of meal are you in the mood for? Tell me about your preferences!"
+
+    # Handle common greetings and questions - check for exact matches first
+    input_lower = user_input.lower().strip()
+
+    # Exact greeting matches
+    greetings = ['hello', 'hi', 'hey', 'mambo', 'habari', 'howdy']
+    greeting_phrases = ['good morning', 'good afternoon', 'good evening', 'hi there', 'hello there']
+
+    is_greeting = (
+        input_lower in greetings or
+        any(phrase in input_lower for phrase in greeting_phrases) or
+        (len(input_lower.split()) <= 2 and any(greeting in input_lower for greeting in greetings))
+    )
+
+    if is_greeting:
+        return "👋 **Mambo!** (Hello in Swahili! 🇰🇪) I'm DormChef AI, your Kenyan meal recommendation expert! What are you craving today? Tell me about your ingredients, budget, or dietary goals!"
+
+    help_keywords = ['help', 'what can you do', 'how do you work', 'commands', 'examples', 'what are you']
+    if any(keyword in input_lower for keyword in help_keywords):
+        return """🤖 **I'm DormChef AI, your smart meal planning assistant!**
+
+**I can help you with:**
+• **Dietary goals:** Weight loss/gain, healthy eating
+• **Budget meals:** Affordable options under $80
+• **Ingredients:** Recipes using what you have
+• **Restrictions:** Vegetarian, vegan, gluten-free
+• **Meal types:** Breakfast, lunch, dinner ideas
+
+**Try asking:**
+• "I want to lose weight"
+• "Cheap meals with chicken"
+• "Vegetarian dinner ideas"
+• "What can I make with beans?"
+• "High calorie breakfast"
+
+What would you like to explore today? 🍽️"""
 
     try:
         intent = parse_user_intent(user_input)
@@ -295,7 +372,7 @@ def get_chatbot_response(user_input: str) -> str:
         return response
 
     except Exception as e:
-        return "Oops! Something went wrong on my end. Let me try a different approach - what kind of meal sounds good to you?"
+        return "😅 Oops! Something went wrong on my end. Let me try a different approach - what kind of meal sounds good to you? You can tell me about ingredients, budget, or dietary preferences!"
 
 def get_meals_by_ingredient(ingredient):
     meals = get_meals_by_criteria(ingredients=[ingredient])
