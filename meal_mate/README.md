@@ -1,23 +1,25 @@
-# 🍴 MealMate — A Kenyan Meal Suggestion Chatbot for Students
+# 🍴 DormChef AI — A Kenyan Meal Suggestion Chatbot for Students
 
-**MealMate** is a beginner-friendly Python chatbot that helps university students plan meals based on what they have in their kitchen.  
+**DormChef AI** is an intelligent meal recommendation chatbot that helps university students plan meals based on their dietary goals, budget, and available ingredients.
 It focuses on affordable and common **Kenyan dishes** that students love!
 
 ---
 
 ## ✨ Features
-- 💬 Chat with MealMate from your terminal
-- 🥘 Suggests local Kenyan dishes based on your available ingredients
-- 🗓️ Builds meal plans for 1–7 days
-- 🧠 100% Python (no extra libraries)
-- 🆓 Can be deployed on **:contentReference[oaicite:0]{index=0}**, **:contentReference[oaicite:1]{index=1}**, or run locally
+- 🤖 AI-powered chat interface with Streamlit
+- 🥘 Intelligent meal suggestions based on ingredients, goals, and preferences
+- 💰 Budget-friendly meal recommendations
+- ⚖️ Weight loss/gain meal planning
+- 🥗 Dietary restriction support (vegetarian, vegan, etc.)
+- 🧠 Smart intent parsing and meal database
+- 🌐 Web-based interface (no terminal required)
 
 ---
 
 ## 🇰🇪 Sample Dishes
-- **Breakfast:** Uji, Chai and mandazi, Sweet potatoes and tea  
-- **Lunch:** Ugali and sukuma wiki, Githeri, Pilau and kachumbari  
-- **Dinner:** Mukimo and beef stew, Ndengu stew with chapati, Matoke with vegetables
+- **Breakfast:** Mandazi and Chai, Avocado Toast with Eggs, Banana Smoothie Bowl
+- **Lunch:** Ugali and Sukuma, Githeri, Pilau, Rice and Beans
+- **Dinner:** Chicken Biryani, Beef Stew with Ugali, Matoke Stew, Vegetable Stew
 
 ---
 
@@ -25,36 +27,45 @@ It focuses on affordable and common **Kenyan dishes** that students love!
 
 1. Clone this repository:
    ```bash
-   git clone https://github.com/<your-username>/mealmate.git
-   cd mealmate
+   git clone https://github.com/MarionOwino-ds/meal_mate.git
+   cd meal_mate/mealmate_ai
    ```
 
-2. Run the chatbot:
+2. Install dependencies:
    ```bash
-   python mealmate.py
+   pip install -r requirements.txt
    ```
 
-3. Chat with MealMate:
-   ```
-   🍴 MealMate: Mambo comrade ?
-   You: I have rice and beans
-   🍴 MealMate: Based on that, you could try:
-    - Rice and beans
-    - Ugali and sukuma wiki
+3. Set up the database:
+   ```bash
+   python database.py  # Creates the meals table
+   python meals_data.py  # Populates with sample data
    ```
 
-4. Create a simple meal plan:
+4. Run the Streamlit app:
+   ```bash
+   streamlit run app.py
    ```
-   You: meal plan
-   How many days should I plan for? (1-7): 3
-   ```
+
+5. Open your browser and start chatting with DormChef AI!
 
 ---
 
-## 🧠 Future Plans
-- Save and export meal plans  
-- Add nutritional info  
-- Convert to a web chatbot  
-- Add Swahili/English language support  
+## 🧪 Testing
+
+Run the test scripts to verify functionality:
+```bash
+python test_db.py      # Check database contents
+python test_chatbot.py # Test chatbot responses
+```
+
+---
+
+## 🧠 How It Works
+
+- **Intent Parsing:** Analyzes user input to understand goals (weight loss/gain, budget), dietary restrictions, and ingredient preferences
+- **Smart Filtering:** Queries SQLite database for meals matching criteria
+- **Response Formatting:** Provides formatted meal suggestions with calories, prices, and ingredients
+- **Fallback Handling:** Offers alternatives when no exact matches are found
 
 ---

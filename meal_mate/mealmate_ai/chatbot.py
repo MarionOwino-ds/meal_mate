@@ -234,7 +234,7 @@ def get_no_results_response(intent: Dict) -> str:
         responses = [
             "Let me find some more affordable options for you:",
             "Budget-friendly meals coming right up! Here are our cheapest options:",
-            "I can show you meals under $10. How does that sound?"
+            "I can show you meals under $80. How does that sound?"
         ]
     else:
         responses = [
@@ -246,7 +246,10 @@ def get_no_results_response(intent: Dict) -> str:
     response = random.choice(responses)
 
     try:
-        fallback_meals = get_meals_by_criteria(limit=3)
+        if intent['goal'] == 'budget':
+            fallback_meals = get_meals_by_criteria(max_price=80, limit=3)
+        else:
+            fallback_meals = get_meals_by_criteria(limit=3)
         if fallback_meals:
             response += "\n\nHere are some popular options instead:\n"
             for meal in fallback_meals:
@@ -270,7 +273,7 @@ def get_chatbot_response(user_input: str) -> str:
         elif intent['goal'] == 'gain_weight':
             query_params['min_calories'] = 600
         elif intent['goal'] == 'budget':
-            query_params['max_price'] = 100
+            query_params['max_price'] = 80
 
         if intent['category']:
             query_params['category'] = intent['category']

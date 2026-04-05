@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Test script for the improved MealMate chatbot
+Test script for the improved DormChef chatbot
 """
 
 from chatbot import get_chatbot_response, parse_user_intent, get_meals_by_criteria
@@ -21,7 +21,7 @@ def test_chatbot():
         "I need to gain weight"
     ]
 
-    print("🧪 Testing MealMate Chatbot Improvements\n")
+    print("🧪 Testing DormChef Chatbot Improvements\n")
     print("=" * 50)
 
     for i, test_input in enumerate(test_cases, 1):
