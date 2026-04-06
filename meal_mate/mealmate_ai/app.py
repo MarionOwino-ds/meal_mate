@@ -76,6 +76,8 @@ with st.sidebar:
     st.markdown("• **Ingredients:** What you have")
     st.markdown("• **Restrictions:** Vegetarian, vegan, etc.")
     st.markdown("• **Meal Types:** Breakfast, lunch, dinner")
+    st.markdown("• **Meal Plans:** Weekly planning")
+    st.markdown("• **Shopping Lists:** From recommendations")
 
     st.markdown("---")
 
@@ -85,7 +87,9 @@ with st.sidebar:
         "Cheap meals with chicken",
         "Vegetarian dinner ideas",
         "High calorie breakfast",
-        "Meals with rice and beans"
+        "Meals with rice and beans",
+        "Create a meal plan",
+        "Generate shopping list"
     ]
 
     for example in examples:
@@ -115,11 +119,18 @@ I'm here to help you discover delicious Kenyan meals based on:
 • Available ingredients
 • Dietary restrictions
 
+**New Features:**
+• 📅 **Meal Planning:** Get weekly meal plans tailored to your goals
+• 🛒 **Shopping Lists:** Generate shopping lists from recommendations
+• 📊 **Nutrition Info:** Detailed protein, carbs, and fat breakdown
+• 👨‍🍳 **Recipes:** Step-by-step cooking instructions
+
 **Try asking me things like:**
 • "I want to lose weight"
 • "Cheap meals with chicken"
 • "Vegetarian dinner ideas"
-• "What can I make with beans?"
+• "Create a meal plan for me"
+• "Generate shopping list"
 
 What are you in the mood for today? 🍽️"""
     st.session_state.messages.append(("DormChef", welcome_msg))

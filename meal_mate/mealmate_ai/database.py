@@ -6,14 +6,21 @@ DB_PATH = os.path.join(os.path.dirname(__file__), "meals.db")
 conn = sqlite3.connect(DB_PATH)
 cursor = conn.cursor()
 
+# Drop table if exists to ensure fresh schema
+cursor.execute("DROP TABLE IF EXISTS meals")
+
 cursor.execute("""
-CREATE TABLE IF NOT EXISTS meals(
+CREATE TABLE meals(
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     name TEXT,
     category TEXT,
     calories INTEGER,
     price INTEGER,
-    ingredients TEXT
+    ingredients TEXT,
+    protein REAL,
+    carbs REAL,
+    fats REAL,
+    recipe TEXT
 )
 """)
 

@@ -7,6 +7,9 @@ from typing import List, Dict, Optional, Tuple
 
 DB_PATH = os.path.join(os.path.dirname(__file__), "meals.db")
 
+# Global storage for last recommendations (simple session)
+last_recommendations = []
+
 @contextmanager
 def get_db_connection():
     conn = sqlite3.connect(DB_PATH)
@@ -28,7 +31,7 @@ def get_meals_by_criteria(
         cursor = conn.cursor()
 
         query = """
-        SELECT name, category, calories, price, ingredients
+        SELECT name, category, calories, price, ingredients, protein, carbs, fats, recipe
         FROM meals WHERE 1=1
         """
         params = []
@@ -78,7 +81,11 @@ def get_meals_by_criteria(
             'category': row[1],
             'calories': row[2],
             'price': row[3],
-            'ingredients': row[4]
+            'ingredients': row[4],
+            'protein': row[5],
+            'carbs': row[6],
+            'fats': row[7],
+            'recipe': row[8]
         } for row in rows]
 
 def parse_user_intent(user_input: str) -> Dict:
@@ -231,7 +238,9 @@ def format_meal_response(meals: List[Dict], intent: Dict) -> str:
 
         meal_lines.append(f"**{i}. 🍽️ {meal['name']}** *({meal['category'].title()})*")
         meal_lines.append(f"   • **Calories:** {meal['calories']} kcal | **Price:** KES {meal['price']}")
+        meal_lines.append(f"   • **Nutrition:** Protein: {meal['protein']}g | Carbs: {meal['carbs']}g | Fats: {meal['fats']}g")
         meal_lines.append(f"   • **Ingredients:** {ingredients_list}")
+        meal_lines.append(f"   • **Recipe:** {meal['recipe']}")
         meal_lines.append(f"   • **💡 Tip:** {category_tip}")
         meal_lines.append(f"   • **🌟 Health:** {health_tip}")
         meal_lines.append("")  # Empty line for spacing
@@ -300,7 +309,32 @@ def get_no_results_response(intent: Dict) -> str:
 
     return response
 
+def generate_shopping_list(meals: List[Dict]) -> str:
+    """Generate a shopping list from selected meals"""
+    all_ingredients = set()
+    for meal in meals:
+        ingredients = meal['ingredients'].split(',')
+        all_ingredients.update([ing.strip() for ing in ingredients])
+
+    if not all_ingredients:
+        return "No ingredients found for shopping list."
+
+    shopping_list = sorted(list(all_ingredients))
+    list_text = "\n".join([f"• {item.title()}" for item in shopping_list])
+
+    total_cost = sum(meal['price'] for meal in meals)
+    total_calories = sum(meal['calories'] for meal in meals)
+
+    response = f"🛒 **Shopping List for {len(meals)} Meal{'s' if len(meals) > 1 else ''}**\n\n"
+    response += f"**Ingredients Needed:**\n{list_text}\n\n"
+    response += f"**Estimated Total Cost:** KES {total_cost}\n"
+    response += f"**Total Calories:** {total_calories} kcal\n\n"
+    response += "💡 **Tip:** Check your pantry first - you might already have some of these!"
+
+    return response
+
 def get_chatbot_response(user_input: str) -> str:
+    global last_recommendations
     if not user_input or not user_input.strip():
         return "👋 Hey there! What kind of meal are you in the mood for? Tell me about your preferences!"
 
@@ -322,7 +356,17 @@ def get_chatbot_response(user_input: str) -> str:
 
     help_keywords = ['help', 'what can you do', 'how do you work', 'commands', 'examples', 'what are you']
     if any(keyword in input_lower for keyword in help_keywords):
-        return """🤖 **I'm DormChef AI, your smart meal planning assistant!**
+        if 'shopping' in input_lower or 'shop' in input_lower or 'buy' in input_lower:
+            return """🛒 **Shopping List Generator**
+
+I can create a shopping list from meal recommendations! Just ask for meals first, then say "create shopping list" or "what do I need to buy?"
+
+**Example:**
+1. "Show me breakfast ideas"
+2. "Create a shopping list for these meals"
+
+This will give you all ingredients needed and estimated costs!"""
+            return """🤖 **I'm DormChef AI, your smart meal planning assistant!**
 
 **I can help you with:**
 • **Dietary goals:** Weight loss/gain, healthy eating
@@ -330,15 +374,32 @@ def get_chatbot_response(user_input: str) -> str:
 • **Ingredients:** Recipes using what you have
 • **Restrictions:** Vegetarian, vegan, gluten-free
 • **Meal types:** Breakfast, lunch, dinner ideas
+• **Meal Plans:** Generate weekly meal plans
+• **Shopping Lists:** Generate shopping lists from recommendations
 
 **Try asking:**
 • "I want to lose weight"
 • "Cheap meals with chicken"
 • "Vegetarian dinner ideas"
 • "What can I make with beans?"
-• "High calorie breakfast"
+• "Create a meal plan for me"
+• "Generate shopping list"
 
 What would you like to explore today? 🍽️"""
+
+    # Handle meal plan requests
+    plan_keywords = ['meal plan', 'weekly plan', 'plan meals', 'diet plan']
+    if any(keyword in input_lower for keyword in plan_keywords):
+        intent = parse_user_intent(user_input)
+        return generate_meal_plan(intent)
+
+    # Handle shopping list requests
+    shopping_keywords = ['shopping list', 'create shopping', 'generate shopping', 'what do i need', 'ingredients list', 'shop', 'buy']
+    if any(keyword in input_lower for keyword in shopping_keywords):
+        if last_recommendations:
+            return generate_shopping_list(last_recommendations)
+        else:
+            return "🤔 I don't have any recent meal recommendations to create a shopping list from. Try asking for meal suggestions first!"
 
     try:
         intent = parse_user_intent(user_input)
@@ -367,6 +428,9 @@ What would you like to explore today? 🍽️"""
             dietary_restrictions=intent.get('dietary_restrictions', [])
         )
 
+        # Store recommendations globally
+        last_recommendations = meals
+
         response = format_meal_response(meals, intent)
 
         return response
@@ -386,11 +450,53 @@ def budget_meals():
     meals = get_meals_by_criteria(max_price=120)
     return [m['name'] for m in meals]
 
-def random_response():
-    responses = [
-        "Hmm… let me think 🤔",
-        "Okay I found something for you!",
-        "Nice! Here are some ideas:",
-        "You might enjoy these meals!"
-    ]
-    return random.choice(responses)
+def generate_meal_plan(intent: Dict, days: int = 7) -> str:
+    """Generate a meal plan based on user preferences"""
+    plan = []
+
+    for day in range(1, days + 1):
+        day_meals = {}
+
+        # Get meals for each category
+        for category in ['breakfast', 'lunch', 'dinner']:
+            meals = get_meals_by_criteria(
+                category=category,
+                min_calories=600 if intent.get('goal') == 'gain_weight' else None,
+                max_calories=500 if intent.get('goal') == 'lose_weight' else None,
+                max_price=500 if intent.get('goal') == 'budget' else None,
+                dietary_restrictions=intent.get('dietary_restrictions', []),
+                limit=3
+            )
+            if meals:
+                day_meals[category] = random.choice(meals)
+
+        plan.append((day, day_meals))
+
+    # Format the plan
+    response = f"📅 **Your {days}-Day Meal Plan**\n\n"
+    total_cost = 0
+    total_calories = 0
+
+    for day, meals in plan:
+        response += f"**Day {day}:**\n"
+        for category, meal in meals.items():
+            response += f"• **{category.title()}:** {meal['name']} ({meal['calories']} cal, KES {meal['price']})\n"
+            total_cost += meal['price']
+            total_calories += meal['calories']
+        response += "\n"
+
+    response += f"**📊 Plan Summary:**\n"
+    response += f"• Total Estimated Cost: KES {total_cost}\n"
+    response += f"• Average Daily Calories: {total_calories // days}\n"
+    response += f"• Total Meals: {len(plan) * 3}\n\n"
+
+    if intent.get('goal') == 'lose_weight':
+        response += "💪 **Weight Loss Focus:** This plan emphasizes lower-calorie, nutrient-dense meals!\n"
+    elif intent.get('goal') == 'gain_weight':
+        response += "🏋️ **Muscle Building Focus:** Higher calorie meals to support your gains!\n"
+    elif intent.get('goal') == 'budget':
+        response += "💰 **Budget-Friendly:** All meals under KES 500 for cost savings!\n"
+
+    response += "\n🛒 Say 'create shopping list' to get ingredients for this plan!"
+
+    return response
